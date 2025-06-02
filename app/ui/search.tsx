@@ -19,7 +19,7 @@ export default function Search({ placeholder }: { placeholder: string }) {
   // Finally, it navigates to the new URL with the updated search parameters.
   // This allows the search functionality to work seamlessly
   // with the Next.js routing system, updating the URL without a full page reload.
-  const query = searchParams.get('query') || '';
+  // const query = searchParams.get('query') || '';
 
   const handleSearch = useDebouncedCallback((term) => {
     // console.log(`Searching... $(term)`);
