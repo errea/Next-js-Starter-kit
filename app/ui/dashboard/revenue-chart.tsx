@@ -10,9 +10,9 @@ import { fetchRevenue } from '@/app/lib/data';
 // https://www.chartjs.org/
 // https://airbnb.io/visx/
 
-export default async function RevenueChart () {
+export default async function RevenueChart() {
   const revenue = await fetchRevenue();
-  
+
   const chartHeight = 350;
   // NOTE: Uncomment this code in Chapter 7
 

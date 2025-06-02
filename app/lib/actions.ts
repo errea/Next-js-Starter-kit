@@ -4,6 +4,8 @@ import { z } from 'zod';
 import postgres from 'postgres';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
+import { signIn } from '@/auth';
+import { AuthError } from 'next-auth';
 
 
 const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require' });
@@ -125,3 +127,40 @@ export async function deleteInvoice(id: string) {
     revalidatePath('/dashboard/invoices');
     // redirect('/dashboard/invoices');
 }
+
+export async function signInUser(email: string, password: string) {
+    try {
+        const result = await signIn('credentials', {
+            email,
+            password,
+            redirect: false,
+        });
+
+        if (result?.error) {
+            throw new AuthError(result.error);
+        }
+
+        revalidatePath('/dashboard/invoices');
+        redirect('/dashboard/invoices');
+    } catch (error) {
+        console.error('Sign-in Error:', error);
+        throw new Error('Failed to sign in. Please check your credentials.');
+    }
+}
+
+
+export async function authenticate(prevState: string | undefined, formData: FormData,) {
+    try {
+      await signIn('credentials', formData);
+    } catch (error) {
+      if (error instanceof AuthError) {
+        switch (error.type) {
+          case 'CredentialsSignin':
+            return 'Invalid credentials.';
+          default:
+            return 'Something went wrong.';
+        }
+      }
+      throw error;
+    }
+  }
